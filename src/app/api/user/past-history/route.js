@@ -27,7 +27,6 @@ export const POST = async (req) => {
             { status: 200 }
         );
     } catch (error) {
-        console.log(error,'checker')
         return NextResponse.json(
             { error, success: false },
             { status: 500 }

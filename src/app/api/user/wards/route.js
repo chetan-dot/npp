@@ -1,8 +1,9 @@
+import connectMongo from "@/db/db";
 import User from "@/models/user";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
-
+connectMongo()
 export const GET = async () => {
     try {
         const fetch_data = await mongoose.connection.db.collection("user_details");

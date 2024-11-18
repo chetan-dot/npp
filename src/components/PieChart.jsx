@@ -78,16 +78,10 @@ const PieChartContainer = () => {
         console.error("Error fetching wards:", error);
       });
 
-    getHistory()
-      .then((response) => {
-        console.log("WardUser API response:", response);
-      })
-      .catch((error) => {
-        console.error("Error fetching ward user details:", error);
-      });
+   
   }, []);
 
-  const filteredWardData = wardData.filter((ward) =>
+  const filteredWardData = wardData?.filter((ward) =>
     String(ward.label).toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -109,8 +103,8 @@ const PieChartContainer = () => {
         />
       </div>
       <div className="flex flex-wrap justify-around">
-        {filteredWardData.length > 0 ? (
-          filteredWardData.map((ward, index) => (
+        {filteredWardData?.length > 0 ? (
+          filteredWardData?.map((ward, index) => (
             <div key={index} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/5 p-2">
               <PieChart
                 totalUser={ward.totalUser}
