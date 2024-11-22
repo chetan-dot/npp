@@ -12,7 +12,7 @@ export const POST = async (request) => {
     // const skip = (page - 1) * limit;
 
     const fetch_data = await mongoose.connection.db.collection("user_details");
-    const result = await fetch_data.find({}) .sort({ updatedAt: -1 }).toArray();
+    const result = await fetch_data.find({Name_of_Household_Owner: { $nin: ["Agyaat","Aagyat"] }}) .sort({ updatedAt: -1 }).toArray();
     // const result = await fetch_data
     //   .find({})
     //   .sort({ updatedAt: -1 })
@@ -24,10 +24,12 @@ export const POST = async (request) => {
 
     const countUserFalse = await fetch_data.countDocuments({
       Garbage_Collected: false,
+      Name_of_Household_Owner: { $nin: ["Agyaat","Aagyat"] },
     });
 
     const countUserTrue = await fetch_data.countDocuments({
       Garbage_Collected: true,
+      Name_of_Household_Owner: { $nin: ["Agyaat","Aagyat"] },
     });
 
     return NextResponse.json(
