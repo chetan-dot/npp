@@ -1,8 +1,9 @@
+"use client"
+
 import React, { useContext, useEffect, useState } from "react";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { fetchAllWards } from "@/helper/apiservices/fetchUserDetails";
-import { getHistory } from "@/helper/apiservices/pastHistoryService";
 import { newContext } from "@/context/contextFun";
 
 // Register Chart.js components
