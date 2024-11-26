@@ -22,6 +22,7 @@ const AdminDashboard = ({
   const [selectedUser, setSelectedUser] = useState(null);
   const [isFileUploadOpen, setFileUploadOpen] = useState(false);
   const { setLoading } = useContext(newContext);
+  const [isUserDetailsUploadOpen, setUserDetailsUploadOpen] = useState(false);
 
   const inactiveUsers = garbageAllUser.filter((user) => user.isActive);
 
@@ -32,10 +33,9 @@ const AdminDashboard = ({
 
   const handleSave = async (updatedUser) => {
     const ward_assigned = updatedUser?.wards?.map((item) => item.label);
-    console.log("ward_assigned :>> ", ward_assigned);
+    // console.log("ward_assigned :>> ", ward_assigned);
     const user_id = selectedUser?._id;
     const updatedValues = { ward_assigned, user_id };
-
     try {
       setLoading(true);
       await updateSaveUser({ ...updatedValues });
@@ -66,33 +66,82 @@ const AdminDashboard = ({
           const sheetData = XLSX.utils.sheet_to_json(
             workbook.Sheets[sheetName]
           );
-          console.log("Parsed Sheet Data:", sheetData);
-
-        
-          
+          // console.log("Parsed Sheet Data:", sheetData);
           if (sheetData.length === 0) {
             console.error(
               "Sheet data is empty. Please check the file content."
             );
           }
-          const groupedData = sheetData.reduce((acc, { employee_name, mobile_number, ward_number }) => {
-            const existingEmployee = acc.find(item => item.employee_name === employee_name && item.mobile_number === mobile_number);
-            if (existingEmployee) {
-              if (!existingEmployee.ward_assigned.includes(ward_number)) {
-                existingEmployee.ward_assigned.push(ward_number);
+          const groupedData = sheetData.reduce(
+            (acc, { employee_name, mobile_number, ward_number }) => {
+              const existingEmployee = acc.find(
+                (item) =>
+                  item.employee_name === employee_name &&
+                  item.mobile_number === mobile_number
+              );
+              if (existingEmployee) {
+                if (!existingEmployee.ward_assigned.includes(ward_number)) {
+                  existingEmployee.ward_assigned.push(ward_number);
+                }
+              } else {
+                acc.push({
+                  employee_name,
+                  mobile_number,
+                  ward_assigned: [ward_number],
+                });
               }
-            } else {
-              acc.push({
-                employee_name,
-                mobile_number,
-                ward_assigned: [ward_number]
-              });
-            }
-            return acc;
-          }, []);
-          
+              return acc;
+            },
+            []
+          );
+
           await signupAdmin(groupedData);
-          toast.success('users has been created')
+          toast.success("users has been created");
+        } catch (error) {
+          console.error("Error parsing XLSX file:", error);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    } else {
+      alert("Please upload a valid XLSX file.");
+    }
+  };
+
+  const handleUserDetailsUpload = async (event) => {
+    const file = event.target.files[0];
+    if (
+      file &&
+      file.type ===
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    ) {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: "array" });
+          const sheetName = workbook.SheetNames[0];
+          const sheetData = XLSX.utils.sheet_to_json(
+            workbook.Sheets[sheetName]
+          );
+          if (sheetData.length === 0) {
+            console.error(
+              "Sheet data is empty. Please check the file content."
+            );
+          }
+          const uniqueData = [];
+          const uniqueIds = new Set();
+
+          sheetData.forEach((item) => {
+            const uniqueId = item.Unique_Property_ID;
+            if (!uniqueIds.has(uniqueId)) {
+              uniqueIds.add(uniqueId);
+              uniqueData.push(item);
+            }
+          });
+
+          console.log("Filtered Sheet Data (no duplicates):", uniqueData);
+
+          toast.success("User details have been uploaded");
         } catch (error) {
           console.error("Error parsing XLSX file:", error);
         }
@@ -182,7 +231,7 @@ const AdminDashboard = ({
           className="bg-primary text-white px-4 py-2 rounded hover:bg-activetabs"
           onClick={() => setFileUploadOpen(true)}
         >
-          Users Upload
+          Garbage Collector Upload
         </button>
       </div>
       <div className="my-5 mx-5" style={{ height: 500 }}>
@@ -205,6 +254,20 @@ const AdminDashboard = ({
         data={selectedUser}
         onSave={handleSave}
       />
+      {isUserDetailsUploadOpen && (
+        <input
+          type="file"
+          accept=".xlsx"
+          className="ml-52"
+          onChange={handleUserDetailsUpload}
+        />
+      )}
+      <button
+        className="bg-primary text-white px-4 py-2 rounded hover:bg-activetabs"
+        onClick={() => setUserDetailsUploadOpen(true)}
+      >
+        User Details Upload
+      </button>
     </>
   );
 };
