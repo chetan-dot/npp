@@ -14,8 +14,7 @@ const BarcodeGeneration = () => {
     try {
       const req = await fetch(`${httpService}/ward-barcode-genration`);
       const res = await req.json();
-      console.log('res :>> ', res.limituser);
-      const filter = res?.limituser?.filter((item) => item?.Ward === 23);
+      const filter = res?.limituser?.filter((item) => item?.Ward === 5);
       setLimitedUser(filter);
     } catch (error) {
       console.error("Error fetching limited users:", error);
@@ -39,6 +38,9 @@ const BarcodeGeneration = () => {
       </button>
       <div className="grid grid-cols-1 print-container w-1/2 mx-auto p-4 gap-4">
         {limitedUser.map((item) => {
+          if (item.Name_of_Household_Owner === "Agyaat") {
+            return null;
+          }
           return (
             <div
               className="border-2 border-black rounded-lg w-[5in] h-[3in] p-2 avoid-page-break"
@@ -53,7 +55,9 @@ const BarcodeGeneration = () => {
                 <div className="text-container text-sm space-y-1">
                   <div className="font-bold">
                     Unique ID:{" "}
-                    <span className="font-normal">{item.Unique_Property_ID}</span>
+                    <span className="font-normal">
+                      {item.Unique_Property_ID}
+                    </span>
                   </div>
                   <div className="font-bold">
                     Name of Owner:{" "}
