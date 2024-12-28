@@ -8,6 +8,7 @@ import { updateSaveUser } from "../helper/apiservices/fetchUserDetails";
 import { newContext } from "@/context/contextFun";
 import * as XLSX from "xlsx";
 import { signupAdmin } from "@/helper/apiservices/adminService";
+import { useRouter } from "next/navigation";
 
 const AdminDashboard = ({
   garbageUser,
@@ -15,6 +16,7 @@ const AdminDashboard = ({
   fetchDataGarbageTable,
   loading,
 }) => {
+  const route = useRouter();
   if (!garbageUser) {
     return <div>Loading...</div>;
   }
@@ -255,20 +257,35 @@ const AdminDashboard = ({
         data={selectedUser}
         onSave={handleSave}
       />
-      {isUserDetailsUploadOpen && (
-        <input
-          type="file"
-          accept=".xlsx"
-          className="ml-52"
-          onChange={handleUserDetailsUpload}
-        />
-      )}
-      <button
-        className="bg-primary text-white px-4 py-2 rounded hover:bg-activetabs"
-        onClick={() => setUserDetailsUploadOpen(true)}
-      >
-        User Details Upload
-      </button>
+
+      <div className="mt-5 flex flex-wrap gap-4">
+        {isUserDetailsUploadOpen && (
+          <input
+            type="file"
+            accept=".xlsx"
+            className="ml-52"
+            onChange={handleUserDetailsUpload}
+          />
+        )}
+        <button
+          className="bg-primary text-white px-4 py-2 rounded hover:bg-activetabs"
+          onClick={() => setUserDetailsUploadOpen(true)}
+        >
+          User Details Upload
+        </button>
+        <button
+          className="bg-secondary text-white px-4 py-2 rounded hover:bg-activetabs flex-1 sm:flex-none"
+          onClick={() => route.push("/barcode-generation")}
+        >
+          Go Barcode Generation Page
+        </button>
+        <button
+          className="bg-secondary text-white px-4 py-2 rounded hover:bg-activetabs flex-1 sm:flex-none"
+          onClick={() => route.push("/dashboard/ward")}
+        >
+          Go Ward Barcode Generation Page
+        </button>
+      </div>
     </>
   );
 };

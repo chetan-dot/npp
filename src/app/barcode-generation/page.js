@@ -13,6 +13,9 @@ const BarcodeGeneration = () => {
   const { loading, setLoading } = useContext(newContext);
   useEffect(() => {
     fetchLimitedUser();
+    return ()=>{
+      setLoading(true)
+    }
   }, []);
 
   useEffect(() => {
@@ -26,10 +29,8 @@ const BarcodeGeneration = () => {
 
   const fetchLimitedUser = async () => {
     try {
-      setLoading(true);
       const req = await fetch(`${httpService}/ward-barcode-genration`);
       const res = await req.json();
-
       const wards = [...new Set(res?.users?.map((item) => item?.Ward))];
       setUniqueWards(wards);
       const filters = res?.users;
@@ -41,9 +42,10 @@ const BarcodeGeneration = () => {
             item?.Name_of_Household_Owner !== "Aagyat"
         )
       );
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching limited users:", error);
+    }finally{
+      setLoading(false);
     }
   };
 

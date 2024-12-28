@@ -22,7 +22,6 @@ const Admin = () => {
   const { loading, setLoading } = useContext(newContext);
 
   const fetchData = async () => {
-    setLoading(true);
     try {
       const [userDetailsResponse, currentUserResponse] = await Promise.all([
         fetchAllUserDetails(),
@@ -38,9 +37,11 @@ const Admin = () => {
         );
         setUser(filteredUsers);
       }
-      setLoading(false);
+
     } catch (error) {
       console.error("Error fetching user details:", error);
+    }finally{
+
     }
   };
 
