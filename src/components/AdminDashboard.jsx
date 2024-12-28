@@ -138,6 +138,7 @@ const AdminDashboard = ({
               uniqueData.push(item);
             }
           });
+          await signupAdmin(uniqueData);
 
           console.log("Filtered Sheet Data (no duplicates):", uniqueData);
 

@@ -7,16 +7,16 @@ await connectMongo();
 export const GET = async (req) => {
   try {
     const users = await UserDetails.find();
-    const limitedUserList = 4314;
-    let limituser =[];
-    for(let i =0;i<limitedUserList;i++){
-      limituser.push(users[i])
-    }
+    // const limitedUserList = 14325;
+    // let limituser =[];
+    // for(let i =0;i<limitedUserList;i++){
+    //   limituser.push(users[i])
+    // }
 
-    console.log(limituser.length,'limituser')
+    // console.log(limituser.length,'limituser')
 
     return NextResponse.json(
-      { limituser, success: true },
+      { users, success: true },
       { status: 200 }
     );
   } catch (error) {
