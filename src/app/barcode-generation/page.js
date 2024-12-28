@@ -18,10 +18,11 @@ const BarcodeGeneration = () => {
       const res = await req.json();
 
       const wards = [...new Set(res?.users?.map((item) => item?.Ward))];
-      setUniqueWards(wards)
-  
+      setUniqueWards(wards);
 
-      const filters = res?.users?.filter((item) => item?.Ward === Number(selectedWard));
+      const filters = res?.users?.filter(
+        (item) => item?.Ward === Number(selectedWard)
+      );
       setLimitedUser(
         filters.filter(
           (item) =>
@@ -45,24 +46,23 @@ const BarcodeGeneration = () => {
         Barcode Generation
       </h1>
       <div className="flex justify-center items-center gap-4 mb-4">
-      <button
+        <button
           onClick={handlePrint}
           className="bg-blue-600 text-white font-bold py-2 px-4 rounded"
         >
           Print PDF
         </button>
         <select
-          className="bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          className="bg-blue-600 text-white font-bold py-2 px-4 rounded max-h-32 overflow-y-auto"
           value={selectedWard}
           onChange={(e) => setSelectedWard(e.target.value)}
         >
-         {uniqueWards.map((ward, index) => (
+          {uniqueWards.map((ward, index) => (
             <option key={index} value={ward}>
               Ward {ward}
             </option>
           ))}
         </select>
-        
       </div>
 
       <div className="grid grid-cols-3 print-container mx-auto p-4 gap-6">
