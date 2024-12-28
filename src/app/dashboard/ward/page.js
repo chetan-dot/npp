@@ -5,36 +5,49 @@ import QRCode from "qrcode.react";
 
 const WardBarcodeGeneration = () => {
   const [wardsData, setWardsData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [selectedWard, setSelectedWard] = useState("all");
 
   useEffect(() => {
     fetchWards();
   }, []);
 
+  useEffect(() => {
+    // Filter data based on selected ward
+    if (selectedWard === "all") {
+      setFilteredData(wardsData);
+    } else {
+      setFilteredData(
+        wardsData.filter((item) => item.ward === selectedWard)
+      );
+    }
+  }, [selectedWard, wardsData]);
+
   const fetchWards = async () => {
     try {
       const req = await fetch(`${httpService}/ward-barcode-genration`);
       const res = await req.json();
-  
+
       const wardsMap = {};
-  
-      res?.limituser?.forEach((item) => {
-        if (item?.Ward && item?.Name_of_Localaty) { 
+
+      res?.users?.forEach((item) => {
+        if (item?.Ward && item?.Name_of_Localaty) {
           wardsMap[item.Ward] = item.Name_of_Localaty;
         }
       });
-  
-      const wardsArray = Object.entries(wardsMap)
-        .map(([ward, locality]) => ({
-          ward,
-          locality,
-        }))
-        .filter(({ ward }) => ward !== undefined);
-  
+
+      const wardsArray = Object.entries(wardsMap).map(([ward, locality]) => ({
+        ward,
+        locality,
+      }));
+
       setWardsData(wardsArray);
+      setFilteredData(wardsArray); // Set initial filtered data
     } catch (error) {
       console.error("Error fetching wards:", error);
     }
   };
+
   const handlePrint = () => {
     window.print();
   };
@@ -44,14 +57,29 @@ const WardBarcodeGeneration = () => {
       <h1 className="text-2xl w-1/2 font-bold mx-auto my-2 text-center bg-primary text-white py-4">
         Ward Barcode Generation
       </h1>
-      <button
-        onClick={handlePrint}
-        className="bg-blue-600 text-white font-bold py-2 px-4 rounded mb-4 mx-auto block"
-      >
-        Print PDF
-      </button>
-      <div className="grid grid-cols-1 print-container w-1/2 mx-auto p-4 gap-4">
-        {wardsData.map(({ ward, locality }) => (
+      <div className="flex justify-center items-center gap-4 mb-4">
+        <button
+          onClick={handlePrint}
+          className="bg-blue-600 text-white font-bold py-2 px-4 rounded"
+        >
+          Print PDF
+        </button>
+        <select
+          className="bg-blue-600 text-white font-bold py-2 px-4 rounded max-h-32 overflow-y-auto"
+          value={selectedWard}
+          onChange={(e) => setSelectedWard(e.target.value)}
+        >
+          <option value="all">All Wards</option>
+          {wardsData.map((ward) => (
+            <option key={ward.ward} value={ward.ward}>
+              Ward {ward.ward}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="grid grid-cols-3 print-container mx-auto p-4 gap-6">
+        {filteredData.map(({ ward, locality }) => (
           <div
             className="border-2 border-black rounded-lg w-[5in] h-[3in] p-2 avoid-page-break"
             key={ward}
@@ -62,7 +90,7 @@ const WardBarcodeGeneration = () => {
               </span>
             </div>
             <div className="flex mt-2 items-center">
-              <div className="text-container text-sm space-y-1">
+              <div className="text-container space-y-1">
                 <div className="font-bold">
                   Ward No: <span className="font-normal">{ward}</span>
                 </div>
@@ -71,7 +99,7 @@ const WardBarcodeGeneration = () => {
                 </div>
               </div>
 
-              <div className="flex-shrink-0 ml-4">
+              <div className="flex-shrink-0 ml-16">
                 <QRCode
                   value={`https://npp-noorpur.org/dashboard/ward/${ward}`}
                   size={190}
@@ -82,7 +110,6 @@ const WardBarcodeGeneration = () => {
         ))}
       </div>
 
-      {/* Add print-specific styles */}
       <style jsx>{`
         @media print {
           body {
@@ -95,16 +122,15 @@ const WardBarcodeGeneration = () => {
             break-inside: avoid;
           }
 
-          // .text-2xl {
-          //   font-size: 1.25rem; /* Adjust font size for print */
-          // }
-
           .print-container {
-            width: 100%; /* Make the width full for printing */
+            width: 100%;
           }
 
           button {
-            display: none; /* Hide print button when printing */
+            display: none;
+          }
+          @page {
+            margin: 0.5in;
           }
         }
       `}</style>
