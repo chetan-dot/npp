@@ -44,7 +44,9 @@ export const POST = async (req) => {
       );
     }
 
-    const houseOwners = await UserDetails.find({ _id: { $in: ids } });
+    const houseOwners = await UserDetails.find({
+      Unique_Property_ID: { $in: ids },
+    });
 
     return NextResponse.json(
       { success: true, data: houseOwners },

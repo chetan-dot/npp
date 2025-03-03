@@ -1,21 +1,23 @@
-"use client";
-import React, { useContext, useEffect, useState } from "react";
-import { httpService } from "@/helper/apiservices/httpserivce";
-import QRCode from "qrcode.react";
-import ContextFun, { newContext } from "@/context/contextFun";
-import { Backdrop, CircularProgress } from "@mui/material";
+'use client';
+import React, { useContext, useEffect, useState } from 'react';
+import { httpService } from '@/helper/apiservices/httpserivce';
+import QRCode from 'qrcode.react';
+import ContextFun, { newContext } from '@/context/contextFun';
+import { Backdrop, CircularProgress } from '@mui/material';
 
 const BarcodeGeneration = () => {
   const [limitedUser, setLimitedUser] = useState([]);
   const [uniqueWards, setUniqueWards] = useState([]);
-  const [selectedWard, setSelectedWard] = useState("23"); // Default Ward
+  const [selectedWard, setSelectedWard] = useState('23'); // Default Ward
   const [filterData, setFilterData] = useState([]);
   const { loading, setLoading } = useContext(newContext);
+  const [searchTerm, setSearchTerm] = useState('');
+
   useEffect(() => {
     fetchLimitedUser();
-    return ()=>{
-      setLoading(true)
-    }
+    return () => {
+      setLoading(true);
+    };
   }, []);
 
   useEffect(() => {
@@ -37,14 +39,48 @@ const BarcodeGeneration = () => {
       setLimitedUser(
         filters.filter(
           (item) =>
-            item?.Name_of_Household_Owner !== "Agyaat " &&
-            item?.Name_of_Household_Owner !== "Agyaat" &&
-            item?.Name_of_Household_Owner !== "Aagyat"
+            item?.Name_of_Household_Owner !== 'Agyaat ' &&
+            item?.Name_of_Household_Owner !== 'Agyaat' &&
+            item?.Name_of_Household_Owner !== 'Aagyat'
         )
       );
     } catch (error) {
-      console.error("Error fetching limited users:", error);
-    }finally{
+      console.error('Error fetching limited users:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = async () => {
+    if (!searchTerm.trim()) return; // Ensure input is not empty
+
+    setLoading(true);
+    try {
+      // Extract 16-digit ID followed by an optional alphabet character
+      const regex = /\b\d{16}[A-Z]?\b/g;
+      const matches = searchTerm.match(regex);
+
+      if (!matches || matches.length === 0) {
+        console.error('No valid IDs found in input');
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch(`${httpService}/houseowner`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: matches }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setFilterData(result.data);
+      } else {
+        console.error('Search failed:', result.error);
+      }
+    } catch (error) {
+      console.error('Error searching:', error);
+    } finally {
       setLoading(false);
     }
   };
@@ -58,17 +94,32 @@ const BarcodeGeneration = () => {
       <h1 className="text-2xl w-1/2 font-bold mx-auto my-2 text-center bg-primary text-white py-4">
         Barcode Generation
       </h1>
+      <div className="flex justify-center items-center gap-4 mb-4">
+        <input
+          type="text"
+          className="border px-4 py-2 rounded w-1/3"
+          placeholder="Search by household owner  Unique ID..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <button
+          onClick={handleSearch}
+          className="bg-green-600 text-white font-bold py-2 px-4 rounded"
+        >
+          Submit
+        </button>
+      </div>
 
       {loading ? (
         <Backdrop
-          sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
+          sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
           open={true}
         >
           <CircularProgress color="inherit" />
         </Backdrop>
       ) : (
         <>
-          <div className="flex justify-center items-center gap-4 mb-4">
+          <div className="flex justify-center items-center gap-4 mt-4">
             <button
               onClick={handlePrint}
               className="bg-blue-600 text-white font-bold py-2 px-4 rounded"
@@ -77,7 +128,7 @@ const BarcodeGeneration = () => {
             </button>
             <select
               className="bg-blue-600 text-white font-bold py-2 px-4 rounded"
-              style={{cursor:'pointer'}}
+              style={{ cursor: 'pointer' }}
               value={selectedWard}
               onChange={(e) => setSelectedWard(e.target.value)}
             >
@@ -122,7 +173,7 @@ const BarcodeGeneration = () => {
                         </span>
                       </div>
                       <div className="font-bold">
-                        Ward No :{" "}
+                        Ward No :{' '}
                         <span className="font-normal">{item.Ward}</span>
                       </div>
                     </div>
