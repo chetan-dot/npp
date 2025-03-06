@@ -57,7 +57,7 @@ export const POST = async (req) => {
     // });
     return response;
   } catch (error) {
-    console.log(error);
+    console.log(error,'error');
     return NextResponse.json(
       { error: "Internal Server Issue", success: false },
       { status: 500 }

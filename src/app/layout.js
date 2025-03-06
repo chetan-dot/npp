@@ -13,7 +13,7 @@ import mongoose from "mongoose";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Nagarnigam Project",
+  title: "Nagar Palika Parishad Noorpur",
   description: "Demo nagarnigam project",
 };
 
