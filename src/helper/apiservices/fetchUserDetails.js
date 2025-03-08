@@ -1,5 +1,5 @@
-import axios from "axios";
-import { httpService } from "./httpserivce";
+import axios from 'axios';
+import { httpService } from './httpserivce';
 
 export const fetchAllUserDetails = async () => {
   try {
@@ -8,7 +8,7 @@ export const fetchAllUserDetails = async () => {
     // console.log(response, "fetchalluserdetails");
     return data;
   } catch (error) {
-    console.error("Error fetching user details");
+    console.error('Error fetching user details');
     return { error: error.message };
   }
 };
@@ -19,7 +19,7 @@ export const fetchUserDetails = async (id) => {
     console.log({ data });
     return data;
   } catch (error) {
-    console.error("Error fetching user details");
+    console.error('Error fetching user details');
     return { error: error.message };
   }
 };
@@ -31,7 +31,7 @@ export const fetchAllEmployee = async (id) => {
     console.log({ data });
     return data;
   } catch (error) {
-    console.error("Error fetching user details");
+    console.error('Error fetching user details');
     return { error: error.message };
   }
 };
@@ -43,7 +43,19 @@ export const fetchAllWards = async (id) => {
     // console.log({ data });
     return data;
   } catch (error) {
-    console.error("Error fetching user details");
+    console.error('Error fetching user details');
+    return { error: error.message };
+  }
+};
+
+export const pastHistoryWard = async (id) => {
+  try {
+    const response = await axios.get(`${httpService}/dataas`);
+    const data = await response.data;
+    // console.log({ data });
+    return data;
+  } catch (error) {
+    console.error('Error fetching user details');
     return { error: error.message };
   }
 };
@@ -58,47 +70,44 @@ export const UpdateUserDetails = async (id, values) => {
     console.log({ data });
     return data;
   } catch (error) {
-    console.error("Error fetching user details");
+    console.error('Error fetching user details');
     return { error: error.message };
   }
 };
 
 export const updateSaveUser = async (values) => {
   try {
-    const response = await axios.patch(
-      `${httpService}/user`,
-      values
-    );
+    const response = await axios.patch(`${httpService}/user`, values);
     const data = response.data;
     return data;
   } catch (error) {
-    console.error("Error fetching user details");
+    console.error('Error fetching user details');
     return { error: error.message };
   }
 };
 
-
-export const UpdateGarbageUser = async (user_id, isActive,) => {
+export const UpdateGarbageUser = async (user_id, isActive) => {
   try {
     const payload = {
       user_id: user_id,
       isActive: isActive,
     };
-    const response = await axios.patch(`${httpService}/user`, {...payload});
+    const response = await axios.patch(`${httpService}/user`, { ...payload });
     return response.data;
   } catch (error) {
-    console.error("Error updating user details:", error);
+    console.error('Error updating user details:', error);
     return { error: error.message };
   }
 };
 
 export const DeleteGarbageUser = async (_id) => {
   try {
-    const response = await axios.delete(`${httpService}/user`, { data: { _id: [_id] } });
+    const response = await axios.delete(`${httpService}/user`, {
+      data: { _id: [_id] },
+    });
     return response.data;
   } catch (error) {
-    console.error("Error deleting user:", error);
+    console.error('Error deleting user:', error);
     return { error: error.message };
   }
 };
-

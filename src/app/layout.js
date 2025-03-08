@@ -9,11 +9,11 @@ import ContextFun from "@/context/contextFun";
 import cron from "node-cron";
 import connectMongo from "@/db/db";
 import mongoose from "mongoose";
-
+import garbage_history from "@/models/garbage_history";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Noorpur Nagarnigam Parishad ",
+  title: "Nagar Palika Parishad Noorpur",
   description: "Demo nagarnigam project",
 };
 
@@ -22,7 +22,37 @@ export async function runSudeler() {
   console.log("runing sudeler");
   try {
     cron.schedule("0 0 * * *", async () => {
+<<<<<<< HEAD
       
+=======
+      function createHistory() {
+        return new Promise(async (resolve, reject) => {
+          try {
+            const response = await fetch(
+              process.env.NEXT_PUBLIC_HTTP_SERVICE + "/user/wards"
+            );
+
+            if (!response.ok) {
+              throw new Error("Failed to fetch data");
+            }
+
+            const hh = await response.json();
+
+            const pylod = {
+              historyData: JSON.stringify(hh),
+            };
+
+            await garbage_history.create(pylod);
+
+            resolve(true);
+          } catch (error) {
+            console.error(error);
+            reject(false);
+          }
+        });
+      }
+      await createHistory();
+>>>>>>> b2ec17aed3cf6d26b51ff441ce74b8f88b6773a2
       // cron.schedule('* * * * *', async () => {
       const fetch_data = await mongoose.connection.db.collection(
         "user_details"
