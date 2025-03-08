@@ -48,14 +48,27 @@ export const fetchAllWards = async (id) => {
   }
 };
 
-export const pastHistoryWard = async (id) => {
+// export const pastHistoryWard = async (id) => {
+//   try {
+//     const response = await axios.get(`${httpService}/dataas`);
+//     const data = await response.data;
+//     // console.log({ data });
+//     return data;
+//   } catch (error) {
+//     console.error('Error fetching user details');
+//     return { error: error.message };
+//   }
+// };
+
+export const datehistory = async (startDate, endDate) => {
   try {
-    const response = await axios.get(`${httpService}/dataas`);
-    const data = await response.data;
-    // console.log({ data });
-    return data;
+    const response = await axios.post(`${httpService}/dataas`, {
+      params: { start_date: startDate, end_date: endDate },
+    });
+
+    return response.data;
   } catch (error) {
-    console.error('Error fetching user details');
+    console.error('Error fetching history data:', error);
     return { error: error.message };
   }
 };
