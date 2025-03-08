@@ -84,16 +84,14 @@ const HistoryChart = () => {
     setLoading(true);
     pastHistoryWard(start, end)
       .then((response) => {
-        const arr = JSON.parse(response?.historyData).totalWards?.map(
-          (item) => ({
-            label: item.label,
-            data: [
-              item.numberOfUser - item.total_no_house_covered,
-              item.total_no_house_covered,
-            ],
-            totalUser: item.numberOfUser,
-          })
-        );
+        const arr = response?.map((item) => ({
+          label: item.label,
+          data: [
+            item.numberOfUser - item.total_no_house_covered,
+            item.total_no_house_covered,
+          ],
+          totalUser: item.numberOfUser,
+        }));
         setWardData(arr);
         setLoading(false);
       })

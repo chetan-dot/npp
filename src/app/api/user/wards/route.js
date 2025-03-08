@@ -12,11 +12,11 @@ export const GET = async () => {
     const wardCounts = result.reduce((acc, item) => {
       const ward = item?.Ward;
       const localaty = item?.Name_of_Localaty;
-      const garbageCollected = item?.Garbage_Collected ? 1 : 0;
-
-      // const garbageCollected = Math.round(Math.random());
+      // const garbageCollected = item?.Garbage_Collected ? 1 : 0;
+      const garbageCollected = Math.round(Math.random());
       if (acc[ward]) {
         acc[ward].numberOfUser += 1;
+        acc[ward].total_no_house_covered += garbageCollected;
         acc[ward].total_no_house_covered += garbageCollected;
       } else {
         acc[ward] = {
