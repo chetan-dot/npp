@@ -10,7 +10,8 @@ export const GET = async () => {
     const result = await fetch_data.find({}).sort({ updatedAt: -1 }).toArray();
     const wardCounts = result.reduce((acc, item) => {
       const ward = item?.Ward;
-      const garbageCollected = item?.Garbage_Collected ? 1 : 0;
+      // const garbageCollected = item?.Garbage_Collected ? 1 : 0;
+      const garbageCollected = Math.round(Math.random());
       if (acc[ward]) {
         acc[ward].numberOfUser += 1;
         acc[ward].total_no_house_covered += garbageCollected;

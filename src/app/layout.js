@@ -9,7 +9,7 @@ import ContextFun from "@/context/contextFun";
 import cron from "node-cron";
 import connectMongo from "@/db/db";
 import mongoose from "mongoose";
-
+import garbage_history from "@/models/garbage_history";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -22,6 +22,33 @@ export async function runSudeler() {
   console.log("runing sudeler");
   try {
     cron.schedule("0 0 * * *", async () => {
+      function createHistory() {
+        return new Promise(async (resolve, reject) => {
+          try {
+            const response = await fetch(
+              process.env.NEXT_PUBLIC_HTTP_SERVICE + "/user/wards"
+            );
+
+            if (!response.ok) {
+              throw new Error("Failed to fetch data");
+            }
+
+            const hh = await response.json();
+
+            const pylod = {
+              historyData: JSON.stringify(hh),
+            };
+
+            await garbage_history.create(pylod);
+
+            resolve(true);
+          } catch (error) {
+            console.error(error);
+            reject(false);
+          }
+        });
+      }
+      await createHistory();
       // cron.schedule('* * * * *', async () => {
       const fetch_data = await mongoose.connection.db.collection(
         "user_details"
