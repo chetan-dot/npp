@@ -4,13 +4,17 @@ import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 connectMongo()
+
 export const GET = async () => {
     try {
         const fetch_data = await mongoose.connection.db.collection("user_details");
         const result = await fetch_data.find({}).sort({ updatedAt: -1 }).toArray();
         const wardCounts = result.reduce((acc, item) => {
             const ward = item?.Ward;
-            const garbageCollected = item?.Garbage_Collected ? 1 : 0;
+        //   const garbageCollected = item?.Garbage_Collected ? 1 : 0;
+        const garbageCollected = Math.round(Math.random());
+
+            const localaty = item?.Name_of_Localaty;
             if (acc[ward]) {
                 acc[ward].numberOfUser += 1;
                 acc[ward].total_no_house_covered += garbageCollected;
@@ -18,6 +22,7 @@ export const GET = async () => {
                 acc[ward] = {
                     label: ward, numberOfUser: 1,
                     total_no_house_covered: garbageCollected,
+                    name_of_locality:localaty
                 };
             }
             return acc;

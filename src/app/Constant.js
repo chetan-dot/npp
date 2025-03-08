@@ -1,17 +1,4 @@
-"use client";
-import Aboutnagarpalika from "@/components/Aboutnagarpalika";
-import Events from "@/components/Events";
-import ImageBioSection from "@/components/ImageBioSection";
-import MarqueeTag from "@/components/MarqueeTag";
-import PieChartContainer from "@/components/PieChart";
-import QuickLinks from "@/components/QuickLinks";
-import Sectionpeople from "@/components/Sectionpeople";
-import SocialAccountsProfileFrames from "@/components/SocialAccountsProfileFrames";
-import Swiper from "@/components/Swiper";
-
-export default function Home() {
-
-  const houseOwner = [
+const houseOwner = [
     {
         "S.no": 1,
         "Ward": 1,
@@ -267048,19 +267035,4 @@ const distinctData = data.filter((item, index, self) =>
     self.findIndex(i => i.Unique_Property_ID === item.Unique_Property_ID) === index
 );
 
-console.log('distinctData', distinctData);
- 
-  return (
-    <div className="  flex-col flex">
-      <MarqueeTag  /> 
-      <Swiper />
-      <Aboutnagarpalika/>
-      {/* <PieChartContainer/> */}
-      <ImageBioSection />
-      <Sectionpeople />
-      <Events />
-      <QuickLinks />
-      <SocialAccountsProfileFrames />
-    </div>
-  );
-}
+console.log(distinctData);

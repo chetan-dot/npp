@@ -22,6 +22,7 @@ export async function runSudeler() {
   console.log("runing sudeler");
   try {
     cron.schedule("0 0 * * *", async () => {
+      
       // cron.schedule('* * * * *', async () => {
       const fetch_data = await mongoose.connection.db.collection(
         "user_details"

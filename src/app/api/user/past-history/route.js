@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectMongo from "@/db/db";
 import pastHistory from "@/models/pastHistory";
+import garbage_history from "@/models/garbage_history";
 connectMongo();
 
 export const POST = async (req) => {
@@ -72,3 +73,76 @@ export const GET = async (req) => {
         );
     }
 };
+
+// export const PATCH = async (req) => {
+//     try {
+//   const { user_id, label, numberOfUser, total_no_house_covered, name_of_locality } = await req.json()
+  
+//       if (!user_id) {
+//         return NextResponse.json(
+//           { error: "id is required" },
+//           { status: 400 }
+//         )
+//       }
+  
+//       const updatedDetails= await garbage_history.findByIdAndUpdate(
+//         user_id,
+//         { label, numberOfUser, total_no_house_covered, name_of_locality, createdAt, 
+//           updatedAt }
+//       )
+  
+//       return NextResponse.json(
+//         { data: updatedDetails, success: true },
+//         { status: 200 }
+//       )
+//     } catch (error) {
+//       return NextResponse.json(
+//         { error: "internal server issue", success: false },
+//         { status: 500 }
+//       )
+//     }
+//   }
+
+export const PATCH = async (req) => {
+    try {
+      const { user_id, label, numberOfUser, total_no_house_covered, name_of_locality } = await req.json();
+  
+      if (!user_id) {
+        return NextResponse.json(
+          { error: "id is required" },
+          { status: 400 }
+        );
+      }
+  
+      const updatedDetails = await garbage_history.findByIdAndUpdate(
+        user_id,
+        {
+          label,
+          numberOfUser,
+          total_no_house_covered,
+          name_of_locality,
+          updatedAt: new Date() 
+        },
+        { new: true } 
+      );
+  
+      if (!updatedDetails) {
+        return NextResponse.json(
+          { error: "No record found with that user_id" },
+          { status: 404 }
+        );
+      }
+  
+      return NextResponse.json(
+        { data: updatedDetails, success: true },
+        { status: 200 }
+      );
+    } catch (error) {
+      console.error(error);
+      return NextResponse.json(
+        { error: "internal server issue", success: false },
+        { status: 500 }
+      );
+    }
+  };
+  
