@@ -6,6 +6,8 @@ export const mockHistoryData = [
         { label: 1, numberOfUser: 300, total_no_house_covered: 280 },
         { label: 2, numberOfUser: 920, total_no_house_covered: 910 },
         { label: 3, numberOfUser: 1100, total_no_house_covered: 1050 },
+        { label: 4, numberOfUser: 1400, total_no_house_covered: 1250 },
+        { label: 5, numberOfUser: 1500, total_no_house_covered: 1150 },
       ],
     }),
     createdAt: '2024-12-01T10:33:20.092Z',
