@@ -22,9 +22,6 @@ export async function runSudeler() {
   console.log("runing sudeler");
   try {
     cron.schedule("0 0 * * *", async () => {
-<<<<<<< HEAD
-      
-=======
       function createHistory() {
         return new Promise(async (resolve, reject) => {
           try {
@@ -52,7 +49,6 @@ export async function runSudeler() {
         });
       }
       await createHistory();
->>>>>>> b2ec17aed3cf6d26b51ff441ce74b8f88b6773a2
       // cron.schedule('* * * * *', async () => {
       const fetch_data = await mongoose.connection.db.collection(
         "user_details"

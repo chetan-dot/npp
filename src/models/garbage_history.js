@@ -11,7 +11,3 @@ const garbageHistorySchema = new mongoose.Schema(
 
 export default mongoose.models.garbageHistory ||
   mongoose.model("garbageHistory", garbageHistorySchema);
-<<<<<<< HEAD
-
-=======
->>>>>>> b2ec17aed3cf6d26b51ff441ce74b8f88b6773a2
