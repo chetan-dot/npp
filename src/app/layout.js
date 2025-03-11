@@ -13,7 +13,7 @@ import garbage_history from "@/models/garbage_history";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Nagarnigam Project",
+  title: "Nagar Palika Parishad Noorpur",
   description: "Demo nagarnigam project",
 };
 

@@ -1,28 +1,28 @@
-"use client";
-import React, { useContext, useEffect, useState } from "react";
-import { newContext } from "@/context/contextFun";
-import Sidebar from "../../components/Sidebar";
-import AdminDashboard from "../../components/AdminDashboard";
-import GarbageCollectorDashboard from "../../components/GarbageCollectorDashboard";
-import { fetchAllUserDetails } from "@/helper/apiservices/fetchUserDetails";
-import { getCurrentUserDetails } from "@/helper/apiservices/adminService";
-import axios from "axios";
-import { httpService } from "@/helper/apiservices/httpserivce";
-import AllDetailsInfo from "../alldetailsinfo/AllDetailsInfo";
-import PieChart from "@/components/PieChart";
-import OnboardingRequest from "@/components/OnboardingRequest";
-import ManageNotice from "@/components/ManageNotice";
+'use client';
+import React, { useContext, useEffect, useState } from 'react';
+import { newContext } from '@/context/contextFun';
+import Sidebar from '../../components/Sidebar';
+import AdminDashboard from '../../components/AdminDashboard';
+import GarbageCollectorDashboard from '../../components/GarbageCollectorDashboard';
+import { fetchAllUserDetails } from '@/helper/apiservices/fetchUserDetails';
+import { getCurrentUserDetails } from '@/helper/apiservices/adminService';
+import axios from 'axios';
+import { httpService } from '@/helper/apiservices/httpserivce';
+import AllDetailsInfo from '../alldetailsinfo/AllDetailsInfo';
+import PieChart from '@/components/PieChart';
+import OnboardingRequest from '@/components/OnboardingRequest';
+import ManageNotice from '@/components/ManageNotice';
+import HistoryChart from '@/components/HistoryChart';
 
 const Admin = () => {
   const { garbageUser, load } = useContext(newContext);
   const [user, setUser] = useState([]);
   const [garbageAllUser, setGarbageAllUser] = useState([]);
-  const [activeTab, setActiveTab] = useState("");
-  const [chartType, setChartType] = useState("Pie Chart");
+  const [activeTab, setActiveTab] = useState('');
+  const [chartType, setChartType] = useState('Pie Chart');
   const { loading, setLoading } = useContext(newContext);
 
   const fetchData = async () => {
-    setLoading(true);
     try {
       const [userDetailsResponse, currentUserResponse] = await Promise.all([
         fetchAllUserDetails(),
@@ -38,9 +38,9 @@ const Admin = () => {
         );
         setUser(filteredUsers);
       }
-      setLoading(false);
     } catch (error) {
-      console.error("Error fetching user details:", error);
+      console.error('Error fetching user details:', error);
+    } finally {
     }
   };
 
@@ -49,11 +49,11 @@ const Admin = () => {
       setLoading(true);
       const response = await axios.get(`${httpService}/user`);
       const garbageCollectorData = response.data.users.filter(
-        (item) => item.role === "garbage_collector"
+        (item) => item.role === 'garbage_collector'
       );
       setGarbageAllUser(garbageCollectorData);
     } catch (error) {
-      console.error("Error fetching garbage collector data:", error);
+      console.error('Error fetching garbage collector data:', error);
     } finally {
       setLoading(false);
     }
@@ -66,48 +66,48 @@ const Admin = () => {
   }, []);
 
   useEffect(() => {
-    if (garbageUser?.role === "admin") {
-      setActiveTab("Admin Dashboard");
+    if (garbageUser?.role === 'admin') {
+      setActiveTab('Admin Dashboard');
     } else {
-      setActiveTab("Garbage Collector");
+      setActiveTab('Garbage Collector');
     }
   }, [garbageUser]);
 
   const columns = [
-    { field: "Unique_Property_ID", headerName: "ID", minWidth: 200 },
+    { field: 'Unique_Property_ID', headerName: 'ID', minWidth: 200 },
     {
-      field: "Name_of_Household_Owner",
-      headerName: "Name of Household Owner",
+      field: 'Name_of_Household_Owner',
+      headerName: 'Name of Household Owner',
       minWidth: 250,
     },
     {
-      field: "Mobile_No",
-      headerName: "Mobile Number",
+      field: 'Mobile_No',
+      headerName: 'Mobile Number',
       minWidth: 170,
       renderCell: (params) => (
-        <div>{params.row.Mobile_No || "Not Available"}</div>
+        <div>{params.row.Mobile_No || 'Not Available'}</div>
       ),
     },
     {
-      field: "Name_of_Localaty",
-      headerName: "Name of Localaty",
+      field: 'Name_of_Localaty',
+      headerName: 'Name of Localaty',
       minWidth: 170,
     },
     {
-      field: "Remarks",
-      headerName: "Remarks",
+      field: 'Remarks',
+      headerName: 'Remarks',
       minWidth: 190,
       renderCell: (params) => (
-        <div>{params.row.Remarks || "Remarks not added"}</div>
+        <div>{params.row.Remarks || 'Remarks not added'}</div>
       ),
     },
-    { field: "Ward", headerName: "Ward", minWidth: 100 },
+    { field: 'Ward', headerName: 'Ward', minWidth: 100 },
     {
-      field: "Garbage_Collected",
-      headerName: "Garbage Collected",
+      field: 'Garbage_Collected',
+      headerName: 'Garbage Collected',
       minWidth: 150,
       renderCell: (params) => (
-        <div>{params.row.Garbage_Collected ? "✅" : "❌"}</div>
+        <div>{params.row.Garbage_Collected ? '✅' : '❌'}</div>
       ),
     },
   ];
@@ -126,44 +126,54 @@ const Admin = () => {
           Hi, welcome back Mr.{garbageUser?.name}!
         </h1>
         <div className="text-gray-700">
-          {activeTab === "Admin Dashboard" && garbageUser?.role === "admin" ? (
+          {activeTab === 'Admin Dashboard' && garbageUser?.role === 'admin' ? (
             <AdminDashboard
               garbageUser={garbageUser}
               garbageAllUser={garbageAllUser}
               loading={loading}
               fetchDataGarbageTable={fetchDataGarbageTable}
             />
-          ) : activeTab === "All Analytices" ? (
+          ) : activeTab === 'All Analytices' ? (
             <>
-            <div className="flex space-x-4 mb-4">
+              <div className="flex space-x-4 mb-4">
                 <button
-                  onClick={() => setChartType("Pie Chart")}
-                  className={`px-4 py-2 rounded-md ${chartType === "Pie Chart" ? "bg-primary text-white" : "bg-gray-300 text-black"}`}
+                  onClick={() => setChartType('Pie Chart')}
+                  className={`px-4 py-2 rounded-md ${
+                    chartType === 'Pie Chart'
+                      ? 'bg-primary text-white'
+                      : 'bg-gray-300 text-black'
+                  }`}
                 >
                   Pie Chart
                 </button>
                 <button
-                  onClick={() => setChartType("Circle Chart")}
-                  className={`px-4 py-2 rounded-md ${chartType === "Circle Chart" ? "bg-primary text-white" : "bg-gray-300 text-black"}`}
+                  onClick={() => setChartType('Circle Chart')}
+                  className={`px-4 py-2 rounded-md ${
+                    chartType === 'Circle Chart'
+                      ? 'bg-primary text-white'
+                      : 'bg-gray-300 text-black'
+                  }`}
                 >
                   Circle Chart
                 </button>
               </div>
               <div className="text-center">
-                {chartType === "Pie Chart" ? (
-                  <PieChart />
-                ) : (
-                  <AllDetailsInfo />
-                )}
+                {chartType === 'Pie Chart' ? <PieChart /> : <AllDetailsInfo />}
               </div>
             </>
-          ) : activeTab === "Onboarding Request" ? (
+          ) : activeTab === 'Onboarding Request' ? (
             <>
               <OnboardingRequest garbageAllUser={garbageAllUser} />
             </>
-          ) : activeTab === "Manage Notice" ? (
+          ) : activeTab === 'Manage Notice' ? (
             <>
               <ManageNotice />
+            </>
+          ) : activeTab === 'past-history' ? (
+            <>
+              <div className="text-center">
+                <HistoryChart />
+              </div>
             </>
           ) : (
             <GarbageCollectorDashboard
