@@ -62,14 +62,13 @@ export const fetchAllWards = async (id) => {
 
 export const datehistory = async (startDate, endDate) => {
   try {
-    const response = await axios.post(`${httpService}/dataas`, {
-      params: { start_date: startDate, end_date: endDate },
-    });
-
+    const response = await axios.post(
+      `${httpService}/dataas?start_date=${startDate}&end_date=${endDate}`
+    );
     return response.data;
   } catch (error) {
     console.error('Error fetching history data:', error);
-    return { error: error.message };
+    return { success: false, message: error.message };
   }
 };
 
