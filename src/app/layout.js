@@ -18,7 +18,7 @@ export const metadata = {
 };
 
 export async function runSudeler() {
-  connectMongo();
+  await connectMongo();
   console.log("runing sudeler");
   try {
     cron.schedule("0 0 * * *", async () => {
