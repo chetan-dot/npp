@@ -1,23 +1,23 @@
-"use client"
+'use client';
 
-import React, { useContext, useEffect, useState } from "react";
-import { Pie } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { fetchAllWards } from "@/helper/apiservices/fetchUserDetails";
-import { newContext } from "@/context/contextFun";
+import React, { useContext, useEffect, useState } from 'react';
+import { Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { fetchAllWards } from '@/helper/apiservices/fetchUserDetails';
+import { newContext } from '@/context/contextFun';
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const PieChart = ({ label, data, totalUser }) => {
   const chartData = {
-    labels: ["Total Number Of Houses", "Total Number of Houses Covered"],
+    labels: ['Total Number Of Houses', 'Total Number of Houses Covered'],
     datasets: [
       {
         label: label,
         data: data,
-        backgroundColor: ["#F28C28", "#36A2EB"],
-        hoverBackgroundColor: ["#F28C28", "#36A2EB"],
+        backgroundColor: ['#F28C28', '#36A2EB'],
+        hoverBackgroundColor: ['#F28C28', '#36A2EB'],
       },
     ],
   };
@@ -27,7 +27,7 @@ const PieChart = ({ label, data, totalUser }) => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: "top",
+        position: 'top',
         labels: {
           padding: 20,
           boxWidth: 20,
@@ -43,7 +43,7 @@ const PieChart = ({ label, data, totalUser }) => {
   };
 
   return (
-    <div className="text-center " style={{ height: "200px", width: "200px" }}>
+    <div className="text-center " style={{ height: '200px', width: '200px' }}>
       <Pie data={chartData} options={options} />
       <h3 className="mt-2 text-lg font-semibold">
         Ward no. {label} ({data[1]}/{totalUser})
@@ -55,7 +55,7 @@ const PieChart = ({ label, data, totalUser }) => {
 const PieChartContainer = () => {
   const { setLoading } = useContext(newContext);
   const [wardData, setWardData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     setLoading(true);
@@ -72,14 +72,12 @@ const PieChartContainer = () => {
           };
         });
         setWardData(arr);
-        console.log(arr, "arr");
+        console.log(arr, 'arr');
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching wards:", error);
+        console.error('Error fetching wards:', error);
       });
-
-   
   }, []);
 
   const filteredWardData = wardData?.filter((ward) =>
