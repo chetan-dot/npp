@@ -13,6 +13,7 @@ import PieChart from '@/components/PieChart';
 import OnboardingRequest from '@/components/OnboardingRequest';
 import ManageNotice from '@/components/ManageNotice';
 import HistoryChart from '@/components/HistoryChart';
+import GoogleMapTracking from '@/components/GoogleMapTracking';
 
 const Admin = () => {
   const { garbageUser, load } = useContext(newContext);
@@ -173,6 +174,12 @@ const Admin = () => {
             <>
               <div className="text-center">
                 <HistoryChart />
+              </div>
+            </>
+          ) : activeTab === 'Tracking Van' ? (
+            <>
+              <div className="text-center">
+                <GoogleMapTracking />
               </div>
             </>
           ) : (

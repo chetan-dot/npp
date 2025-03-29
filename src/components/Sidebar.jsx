@@ -46,6 +46,14 @@ const Sidebar = ({ activeTab, setActiveTab, garbageUser }) => {
             >
               Manage Notice
             </li>
+            <li
+              className={`flex items-center text-white cursor-pointer ${
+                activeTab === 'Analytics / Status' ? 'text-gray-300' : ''
+              }`}
+              onClick={() => setActiveTab('Tracking Van')}
+            >
+              Tracking Garbage Van
+            </li>
           </>
         )}
 
