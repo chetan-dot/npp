@@ -123,3 +123,14 @@ export const DeleteGarbageUser = async (_id) => {
     return { error: error.message };
   }
 };
+export const RejectComplains = async (_id) => {
+  try {
+    const response = await axios.delete(`${httpService}/complaint`, {
+      data: { _id },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    return { error: error.message };
+  }
+};
