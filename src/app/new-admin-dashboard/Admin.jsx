@@ -1,4 +1,5 @@
 'use client';
+import dynamic from 'next/dynamic';
 import React, { useContext, useEffect, useState } from 'react';
 import { newContext } from '@/context/contextFun';
 import Sidebar from '../../components/Sidebar';
@@ -14,7 +15,10 @@ import OnboardingRequest from '@/components/OnboardingRequest';
 import ManageNotice from '@/components/ManageNotice';
 import HistoryChart from '@/components/HistoryChart';
 import ViewComplains from '../viewcomplains/Viewcomplains';
-import MapComponent from '@/components/MapComponent';
+
+const MapTracker = dynamic(() => import('../../components/MapTracker'), {
+  ssr: false,
+});
 
 const Admin = () => {
   const { garbageUser, load } = useContext(newContext);
@@ -186,7 +190,7 @@ const Admin = () => {
           ) : activeTab === 'Tracking Van' ? (
             <>
               <div className="text-center">
-                <MapComponent />
+                <MapTracker />
               </div>
             </>
           ) : (
