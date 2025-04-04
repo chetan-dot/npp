@@ -1,22 +1,20 @@
-import connectMongo from '@/db/db';
-import User from '@/models/user';
-import wards_analytics from '@/models/wards_analytics';
-import mongoose from 'mongoose';
-import { NextResponse } from 'next/server';
-import { v4 as uuidv4 } from 'uuid';
+import connectMongo from "@/db/db";
+import User from "@/models/user";
+import wards_analytics from "@/models/wards_analytics";
+import mongoose from "mongoose";
+import { NextResponse } from "next/server";
+import { v4 as uuidv4 } from "uuid";
 connectMongo();
 export const GET = async () => {
   try {
-    const fetch_data = await mongoose.connection.db.collection('user_details');
+    const fetch_data = await mongoose.connection.db.collection("user_details");
     const result = await fetch_data.find({}).sort({ updatedAt: -1 }).toArray();
     const wardCounts = result.reduce((acc, item) => {
       const ward = item?.Ward;
       const localaty = item?.Name_of_Localaty;
-      // const garbageCollected = item?.Garbage_Collected ? 1 : 0;
-      const garbageCollected = Math.round(Math.random());
+      const garbageCollected = item?.Garbage_Collected ? 1 : 0;
       if (acc[ward]) {
         acc[ward].numberOfUser += 1;
-        acc[ward].total_no_house_covered += garbageCollected;
         acc[ward].total_no_house_covered += garbageCollected;
       } else {
         acc[ward] = {
@@ -44,7 +42,7 @@ export const POST = async (req) => {
     const { data } = await req.json();
     if (!Array.isArray(data) || data.length === 0) {
       return NextResponse.json(
-        { error: 'data is required in array format', success: false },
+        { error: "data is required in array format", success: false },
         { status: 400 }
       );
     }

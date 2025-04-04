@@ -1,4 +1,5 @@
 'use client';
+import dynamic from 'next/dynamic';
 import React, { useContext, useEffect, useState } from 'react';
 import { newContext } from '@/context/contextFun';
 import Sidebar from '../../components/Sidebar';
@@ -13,6 +14,11 @@ import PieChart from '@/components/PieChart';
 import OnboardingRequest from '@/components/OnboardingRequest';
 import ManageNotice from '@/components/ManageNotice';
 import HistoryChart from '@/components/HistoryChart';
+import ViewComplains from '../viewcomplains/Viewcomplains';
+
+const MapTracker = dynamic(() => import('../../components/MapTracker'), {
+  ssr: false,
+});
 
 const Admin = () => {
   const { garbageUser, load } = useContext(newContext);
@@ -173,6 +179,18 @@ const Admin = () => {
             <>
               <div className="text-center">
                 <HistoryChart />
+              </div>
+            </>
+          ) : activeTab === 'View-Complains' ? (
+            <>
+              <div className="text-center">
+                <ViewComplains />
+              </div>
+            </>
+          ) : activeTab === 'Tracking Van' ? (
+            <>
+              <div className="text-center">
+                <MapTracker />
               </div>
             </>
           ) : (

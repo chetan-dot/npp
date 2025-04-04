@@ -16,10 +16,12 @@ export const getCurrentUserDetails = async () => {
 
 export const loginAdmin = async (crendtials) => {
   try {
+    console.log(httpService,"httpService")
     const response = await axios.post(
       `${httpService}/admin/login`,
       crendtials
     );
+    console.log(response,"check res")
     return response;
   } catch (error) {
     console.log(error);

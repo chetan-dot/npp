@@ -1,15 +1,15 @@
-"use client";
-import React, { useContext, useEffect, useState } from "react";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
+'use client';
+import React, { useContext, useEffect, useState } from 'react';
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
 import {
   fetchUserDetails,
   UpdateUserDetails,
-} from "@/helper/apiservices/fetchUserDetails";
-import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
-import { createHistory } from "@/helper/apiservices/pastHistoryService";
-import { newContext } from "@/context/contextFun";
+} from '@/helper/apiservices/fetchUserDetails';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
+import { createHistory } from '@/helper/apiservices/pastHistoryService';
+import { newContext } from '@/context/contextFun';
 
 const Update_N_User = ({ userId }) => {
   const [qrValue, setQrValue] = useState([]);
@@ -21,7 +21,7 @@ const Update_N_User = ({ userId }) => {
   }, []);
 
   const defaultValue = {
-    Garbage_Collected: "",
+    Garbage_Collected: '',
   };
 
   const validationSchema = Yup.object({});
@@ -30,9 +30,10 @@ const Update_N_User = ({ userId }) => {
     const fetchData = async () => {
       try {
         const response = await fetchUserDetails(userId);
+        console.log('response :>> ', response);
         setQrValue([response.result]);
       } catch (error) {
-        console.error("Error fetching user details:", error);
+        console.error('Error fetching user details:', error);
       }
     };
 
@@ -41,50 +42,42 @@ const Update_N_User = ({ userId }) => {
 
   const runPasthistory = async (values) => {
     try {
-      const user_ward = qrValue.length > 0 ? qrValue[0].Ward : "";
-      console.log("valueee",values.Garbage_Collected);
-  
-      
+      const user_ward = qrValue.length > 0 ? qrValue[0].Ward : '';
+      console.log('valueee', values.Garbage_Collected);
+
       const res = await createHistory({
         house_id: userId,
         employee_id: garbageUser._id,
         employee_name: garbageUser.name,
-        is_garabge_collected:values.Garbage_Collected,
-        user_ward:user_ward,
-        message:
-          values.Remarks,
+        is_garabge_collected: values.Garbage_Collected,
+        user_ward: user_ward,
+        message: values.Remarks,
       });
-      
-      
     } catch (error) {
       console.log(error);
     } finally {
-      router.push("/dashboard");
+      router.push('/dashboard');
     }
-  }; 
-
+  };
 
   const handleSubmit = async (garbageCollectedValue) => {
     const values = {
       Garbage_Collected: garbageCollectedValue,
       Remarks:
-      garbageCollectedValue === true 
-          ? "Garbage collected"
-          : "Garbage not collected",
-      
+        garbageCollectedValue === true
+          ? 'Garbage collected'
+          : 'Garbage not collected',
     };
-    
-    
 
     try {
       const response = await UpdateUserDetails(userId, values);
       const updatedResponse = await fetchUserDetails(userId);
       if (response.success === true) {
-        toast.success("Updated user successfully");
+        toast.success('Updated user successfully');
       }
       setQrValue([updatedResponse.result]);
     } catch (error) {
-      console.error("Error updating user details:", error);
+      console.error('Error updating user details:', error);
     }
     runPasthistory(values);
   };
@@ -104,10 +97,10 @@ const Update_N_User = ({ userId }) => {
                   <React.Fragment key={index}>
                     {/* Unique ID */}
                     <div className="p-2  text-center bg-gray-100 font-bold">
-                      Unique ID 
+                      Unique ID
                     </div>
                     <div className="p-2 text-center bg-gray-100">
-                      {ele.Unique_Property_ID}
+                      {ele?.Unique_Property_ID}
                     </div>
 
                     {/* Name of Owner */}
@@ -115,19 +108,23 @@ const Update_N_User = ({ userId }) => {
                       Name of Owner
                     </div>
                     <div className="p-2 text-center bg-gray-100">
-                      {ele.Name_of_Household_Owner}
+                      {ele?.Name_of_Household_Owner}
                     </div>
 
                     {/* Locality */}
-                    <div className="p-2  text-center bg-gray-100 font-bold">Locality</div>
+                    <div className="p-2  text-center bg-gray-100 font-bold">
+                      Locality
+                    </div>
                     <div className="p-2 text-center bg-gray-100 ">
-                      {ele.Name_of_Localaty}
+                      {ele?.Name_of_Localaty}
                     </div>
 
                     {/* Ward No */}
-                    <div className="p-2 text-center  bg-gray-100 font-bold">Ward No</div>
+                    <div className="p-2 text-center  bg-gray-100 font-bold">
+                      Ward No
+                    </div>
                     <div className="p-2 text-center bg-gray-100 ">
-                      {ele.Ward}
+                      {ele?.Ward}
                     </div>
                   </React.Fragment>
                 ))}
@@ -177,4 +174,4 @@ const Update_N_User = ({ userId }) => {
   );
 };
 
-export default Update_N_User;
+export default Update_N_User;

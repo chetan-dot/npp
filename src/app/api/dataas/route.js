@@ -1,6 +1,6 @@
-import connectMongo from '@/db/db';
-import { NextResponse } from 'next/server';
-import garbage_history from '@/models/garbage_history';
+import connectMongo from "@/db/db";
+import { NextResponse } from "next/server";
+import garbage_history from "@/models/garbage_history";
 connectMongo();
 
 export const GET = async () => {
@@ -10,7 +10,7 @@ export const GET = async () => {
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      { error: 'Failed to fetcsh data' },
+      { error: "Failed to fetcsh data" },
       { status: 500 }
     );
   }
@@ -19,8 +19,8 @@ export const GET = async () => {
 export const POST = async (req) => {
   try {
     const { searchParams } = new URL(req.url);
-    const startDate = searchParams.get('start_date');
-    const endDate = searchParams.get('end_date');
+    const startDate = searchParams.get("start_date");
+    const endDate = searchParams.get("end_date");
     let query = {};
     if (startDate && endDate) {
       query.createdAt = {
@@ -79,19 +79,18 @@ export const POST = async (req) => {
       { status: 200 }
     );
   } catch (error) {
-    console.log('error ', error);
+    console.log("error ", error);
     return NextResponse.json(
-      { success: false, message: 'An error occurred' },
+      { success: false, message: "An error occurred" },
       { status: 500 }
     );
   }
 };
-
 export const PATCH = async (req) => {
   try {
     const { _id, historyData } = await req.json();
     if (!_id) {
-      return NextResponse.json({ error: 'id is required' }, { status: 400 });
+      return NextResponse.json({ error: "id is required" }, { status: 400 });
     }
 
     const updatedDetails = await garbage_history.findByIdAndUpdate(
@@ -102,7 +101,7 @@ export const PATCH = async (req) => {
 
     if (!updatedDetails) {
       return NextResponse.json(
-        { error: 'No record found with that user_id' },
+        { error: "No record found with that user_id" },
         { status: 404 }
       );
     }
@@ -112,9 +111,9 @@ export const PATCH = async (req) => {
       { status: 200 }
     );
   } catch (error) {
-    console.error('Error during update:', error);
+    console.error("Error during update:", error);
     return NextResponse.json(
-      { error: 'Internal server issue', success: false },
+      { error: "Internal server issue", success: false },
       { status: 500 }
     );
   }
