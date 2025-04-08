@@ -1,62 +1,3 @@
-// import React, { useEffect, useState } from 'react';
-// import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-// import L from 'leaflet';
-// import 'leaflet/dist/leaflet.css';
-
-// // Fix leaflet marker icons not showing
-// delete L.Icon.Default.prototype._getIconUrl;
-// L.Icon.Default.mergeOptions({
-//   iconRetinaUrl:
-//     'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-//   iconUrl:
-//     'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-//   shadowUrl:
-//     'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-// });
-
-// const LiveTrackingComponent = () => {
-//   const [position, setPosition] = useState([28.6139, 77.209]); // Default: Delhi
-
-//   useEffect(() => {
-//     const watchId = navigator.geolocation.watchPosition(
-//       (pos) => {
-//         const { latitude, longitude } = pos.coords;
-//         setPosition([latitude, longitude]);
-//       },
-//       (err) => {
-//         console.error('Error getting location: ', err);
-//       },
-//       {
-//         enableHighAccuracy: true,
-//         timeout: 10000,
-//         maximumAge: 0,
-//       }
-//     );
-
-//     return () => navigator.geolocation.clearWatch(watchId);
-//   }, []);
-
-//   return (
-//     <div style={{ height: '500px', width: '100%' }}>
-//       <MapContainer
-//         center={position}
-//         zoom={16}
-//         style={{ height: '100%', width: '100%' }}
-//       >
-//         <TileLayer
-//           attribution="&copy; OpenStreetMap contributors"
-//           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-//         />
-//         <Marker position={position}>
-//           <Popup>🚗 Vehicle is here!</Popup>
-//         </Marker>
-//       </MapContainer>
-//     </div>
-//   );
-// };
-
-// export default LiveTrackingComponent;
-
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
@@ -65,49 +6,140 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 const MapTracker = () => {
   const mapRef = useRef(null);
   const markerRef = useRef(null);
-  const [position, setPosition] = useState([77.209, 28.6139]);
+  const routeRef = useRef([]);
+  const intervalRef = useRef(null);
+
+  const noorpurLocations = [
+    [78.404, 29.148],
+    [78.407, 29.15],
+    [78.41, 29.152],
+    [78.412, 29.154],
+    [78.415, 29.156],
+  ];
+
+  const [position, setPosition] = useState(noorpurLocations[0]);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    mapRef.current = new maplibregl.Map({
+    const bounds = [
+      [68.0, 6.0],
+      [97.5, 37.0],
+    ];
+
+    const map = new maplibregl.Map({
       container: 'mapContainer',
-      style: 'https://demotiles.maplibre.org/style.json',
+      style: `https://api.maptiler.com/maps/streets/style.json?key=l9lmtrpVhvZpFVk4QpST`,
       center: position,
-      zoom: 14,
+      zoom: 15,
+      minZoom: 4,
+      maxBounds: bounds,
     });
 
-    // Add marker
-    markerRef.current = new maplibregl.Marker()
-      .setLngLat(position)
-      .addTo(mapRef.current);
+    mapRef.current = map;
 
-    return () => mapRef.current.remove();
+    // 🚗 Car Marker
+    const carEl = document.createElement('div');
+    carEl.innerText = '🚗';
+    carEl.style.fontSize = '24px';
+
+    markerRef.current = new maplibregl.Marker({ element: carEl })
+      .setLngLat(position)
+      .addTo(map);
+
+    map.on('load', () => {
+      // 📍 Static markers at each location
+      noorpurLocations.forEach((coord) => {
+        const locEl = document.createElement('div');
+        locEl.innerText = '📍';
+        locEl.style.fontSize = '20px';
+        new maplibregl.Marker({ element: locEl }).setLngLat(coord).addTo(map);
+      });
+
+      // 🟦 Route line source
+      map.addSource('route', {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'LineString',
+            coordinates: [position],
+          },
+        },
+      });
+
+      // 🟦 Route line layer
+      map.addLayer({
+        id: 'route-line',
+        type: 'line',
+        source: 'route',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round',
+        },
+        paint: {
+          'line-color': '#0074D9',
+          'line-width': 5,
+        },
+      });
+
+      // Start route trail
+      routeRef.current = [position];
+    });
+
+    return () => map.remove();
   }, []);
 
   useEffect(() => {
-    const watchId = navigator.geolocation.watchPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        const newCoords = [longitude, latitude];
-        setPosition(newCoords);
+    if (mapRef.current && currentIndex === 0) {
+      intervalRef.current = setInterval(() => {
+        setCurrentIndex((prevIndex) => {
+          const nextIndex = prevIndex + 1;
+          if (nextIndex >= noorpurLocations.length) {
+            clearInterval(intervalRef.current); // 🛑 Stop at final point
+            return prevIndex;
+          }
+          return nextIndex;
+        });
+      }, 3000); // move every 3 seconds
+    }
 
-        if (markerRef.current) markerRef.current.setLngLat(newCoords);
-        if (mapRef.current) mapRef.current.setCenter(newCoords);
-      },
-      (err) => console.error('GPS error:', err),
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
+    return () => clearInterval(intervalRef.current);
+  }, [mapRef.current]);
 
-    return () => navigator.geolocation.clearWatch(watchId);
-  }, []);
+  useEffect(() => {
+    const nextPosition = noorpurLocations[currentIndex];
+    setPosition(nextPosition);
+
+    if (markerRef.current) markerRef.current.setLngLat(nextPosition);
+    if (mapRef.current) {
+      mapRef.current.flyTo({ center: nextPosition, speed: 0.5 });
+
+      // 🟦 Update route trail
+      routeRef.current.push(nextPosition);
+
+      const source = mapRef.current.getSource('route');
+      if (source) {
+        source.setData({
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'LineString',
+            coordinates: routeRef.current,
+          },
+        });
+      }
+    }
+  }, [currentIndex]);
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-2">🚗 Live GPS Tracker</h2>
+      <h2 className="text-xl font-bold mb-2">🚗 Noorpur Car GPS Tracker</h2>
       <div
         id="mapContainer"
-        style={{ height: '500px', width: '100%', borderRadius: '10px' }}
+        style={{ height: '700px', width: '100%', borderRadius: '10px' }}
       />
     </div>
   );
