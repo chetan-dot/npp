@@ -149,6 +149,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
+import geolocator from 'geolocator';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 const MapTracker = () => {
@@ -157,10 +158,9 @@ const MapTracker = () => {
   const [position, setPosition] = useState([78.404, 29.148]);
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !navigator.geolocation) {
-      alert('Geolocation is not supported by your browser');
-      return;
-    }
+    if (typeof window === 'undefined') return;
+
+    geolocator.config({ language: 'en' });
 
     const map = new maplibregl.Map({
       container: 'mapContainer',
@@ -179,27 +179,30 @@ const MapTracker = () => {
       .setLngLat(position)
       .addTo(map);
 
-    const watchId = navigator.geolocation.watchPosition(
-      (pos) => {
-        const coords = [pos.coords.longitude, pos.coords.latitude];
-        setPosition(coords);
+    const getLocation = () => {
+      geolocator.locate(
+        {
+          enableHighAccuracy: true,
+          maximumAge: 60000,
+          timeout: 5000,
+        },
+        (err, location) => {
+          if (err) return console.error(err);
 
-        if (markerRef.current) markerRef.current.setLngLat(coords);
-        if (mapRef.current)
-          mapRef.current.flyTo({ center: coords, speed: 0.8 });
-      },
-      (err) => {
-        console.error('Location error:', err);
-      },
-      {
-        enableHighAccuracy: true,
-        maximumAge: 0,
-        timeout: 10000,
-      }
-    );
+          const coords = [location.coords.longitude, location.coords.latitude];
+          setPosition(coords);
+
+          if (markerRef.current) markerRef.current.setLngLat(coords);
+          if (mapRef.current)
+            mapRef.current.flyTo({ center: coords, speed: 0.5 });
+        }
+      );
+    };
+
+    const intervalId = setInterval(getLocation, 5000);
 
     return () => {
-      navigator.geolocation.clearWatch(watchId);
+      clearInterval(intervalId);
       map.remove();
     };
   }, []);
