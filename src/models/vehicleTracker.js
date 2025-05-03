@@ -1,8 +1,11 @@
 import mongoose from "mongoose";
 
-const vehcileSchema = new mongoose.Schema(
+const vehicleSchema = new mongoose.Schema(
   {
     vehicleNo: {
+      type: String,
+    },
+    vehicleName: {
       type: String,
     },
     ownerName: {
@@ -24,4 +27,4 @@ const vehcileSchema = new mongoose.Schema(
 );
 
 export default mongoose.models.vehicle ||
-  mongoose.model("vehicle", vehcileSchema);
+  mongoose.model("vehicle", vehicleSchema);
