@@ -24,6 +24,7 @@ export const POST = async (req) => {
       vehicleName,
       ownerName,
       vehicleType,
+      ward,
     });
 
     return NextResponse.json(
