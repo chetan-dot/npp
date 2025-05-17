@@ -20,6 +20,9 @@ const vehicleSchema = new mongoose.Schema(
     vehicleType: {
       type: String,
     },
+    ward: {
+      type: String,
+    },
   },
   {
     timestamps: true,

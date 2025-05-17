@@ -5,12 +5,13 @@ connectMongo();
 
 export const POST = async (req) => {
   try {
-    const { vehicleName, ownerName, vehicleType } =
+    const { vehicleName, ownerName, vehicleType, ward } =
       await req.json();
     if (
       !vehicleName ||
       !ownerName ||
-      !vehicleType
+      !vehicleType ||
+      !ward
     ) {
       return NextResponse.json(
         { error: " missing all fields are required", success: false },
@@ -60,7 +61,7 @@ export const GET = async (req) => {
 
 export const PATCH = async (req) => {
   try {
-    const { _id, vehicleName, ownerName, vehicleType } = await req.json();
+    const { _id, vehicleName, ownerName, vehicleType, ward} = await req.json();
 
     if (!_id) {
       return NextResponse.json(
@@ -70,7 +71,7 @@ export const PATCH = async (req) => {
     }
 
     const updatedVehicle = await vehicle.findByIdAndUpdate(_id, {
-        vehicleName, ownerName, vehicleType
+        vehicleName, ownerName, vehicleType, ward
     });
 
     if (!updatedVehicle) {
