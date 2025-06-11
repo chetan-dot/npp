@@ -134,3 +134,15 @@ export const RejectComplains = async (_id) => {
     return { error: error.message };
   }
 };
+
+export const vehicleTracker = async () => {
+  try {
+    const response = await axios.post(`${httpService}/admin/vehicleTracker`);
+    const data = await response.data;
+    // console.log(response, "fetchalluserdetails");
+    return data;
+  } catch (error) {
+    console.error('Error fetching user details');
+    return { error: error.message };
+  }
+};
