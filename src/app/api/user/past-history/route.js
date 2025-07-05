@@ -109,7 +109,7 @@ export const PATCH = async (req) => {
   
       if (!user_id) {
         return NextResponse.json(
-          { error: "id is required" },
+          { error: "id is required"},
           { status: 400 }
         );
       }
@@ -118,7 +118,7 @@ export const PATCH = async (req) => {
         user_id,
         {
           label,
-          numberOfUser,
+          numberOfUser, 
           total_no_house_covered,
           name_of_locality,
           updatedAt: new Date() 
